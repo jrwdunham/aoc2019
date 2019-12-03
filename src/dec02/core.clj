@@ -68,7 +68,7 @@
              (map (fn [[noun verb]]
                     [(-> (pre-process program noun verb) run (get 0))
                      noun verb]))
-             (filter (fn [[output noun verb]] (= target output)))
+             (filter (fn [[output _ _]] (= target output)))
              first
              rest)]
     (+ (* 100 noun) verb)))
