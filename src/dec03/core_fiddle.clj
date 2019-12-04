@@ -9,6 +9,10 @@
               (= distance (sut/get-closest-intersection wire-1 wire-2))))
        (every? identity))
 
+  (peek [1 2 3])
+
+  (last [1 2 3])
+
   ;; Confirm the algorithm works for part two for the example cases.
   (->> sut/puzzles
        (map (fn [{:keys [wire-1 wire-2 steps]}]
