@@ -35,3 +35,10 @@
        (map calculate-total-fuel-needed-for-module)
        (reduce +)))
 
+(defn x
+  [mass]
+  (loop [m mass total 0]
+    (let [to-add (calculate-fuel-needed m)]
+      (if (= 0 to-add)
+        total
+        (recur to-add (+ total to-add))))))

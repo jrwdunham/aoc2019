@@ -40,5 +40,10 @@
       sut/get-module-masses
       sut/calculate-total-fuel-needed-for-modules)  ;; 5218616 CORRECT
 
+  (sut/x 14)
+
+  (apply < (list 1 2 3 4 5 6))
+
+
 )
 

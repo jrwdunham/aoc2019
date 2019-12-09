@@ -1,8 +1,15 @@
 (ns dec05.core-fiddle
   (:require [dec05.core :as sut]
+            [dec05.other :as oth]
             [clojure.string :as str]))
 
 (comment
+
+  (oth)
+
+  (-> sut/program-path
+      slurp
+      oth/solve1)
 
   ;; Correct answer to part one: 12896948
   (= 12896948 (sut/run-TEST))
@@ -51,5 +58,7 @@
   (sut/relation-to-8 7)
 
   (sut/relation-to-8 9)
+
+  (format "%04d" 20091)
 
 )

@@ -38,26 +38,27 @@
 (defn run
   "Run `program` starting at index `cur-pos`. Supply the program with int
   `input` and return an int output."
-  ([program input] (run program input 0))
-  ([program input cur-pos]
+  ([program input] (run program input 0 false))
+  ([program input cur-pos] (run program input cur-pos false))
+  ([program input cur-pos return-program?]
    (let [[op p1 _ p3 v1 v2] (get-moded-vals program cur-pos)
          op-v1-v2->p3 (fn [op]
-                       (run (assoc program p3 (op v1 v2)) input (+ cur-pos 4)))
-         op-v1->v2 (fn [op] (if (op 0 v1) (run program input (+ cur-pos 3))
-                                (run program input v2)))
+                       (run (assoc program p3 (op v1 v2)) input (+ cur-pos 4) return-program?))
+         op-v1->v2 (fn [op] (if (op 0 v1) (run program input (+ cur-pos 3) return-program?)
+                                (run program input v2 return-program?)))
          op-v1-v2->characteristic->p3
          (fn [op] (run (assoc program p3 (if (op v1 v2) 1 0))
-                    input (+ cur-pos 4)))]
+                    input (+ cur-pos 4) return-program?))]
       (case op
         1 (op-v1-v2->p3 +)
         2 (op-v1-v2->p3 *)
-        3 (run (assoc program p1 input) input (+ cur-pos 2))
-        4 (run program v1 (+ cur-pos 2))
+        3 (run (assoc program p1 input) input (+ cur-pos 2) return-program?)
+        4 (run program v1 (+ cur-pos 2) return-program?)
         5 (op-v1->v2 =)
         6 (op-v1->v2 not=)
         7 (op-v1-v2->characteristic->p3 <)
         8 (op-v1-v2->characteristic->p3 =)
-        99 input))))
+        99 (if return-program? program input)))))
 
 (defn run-TEST
   []

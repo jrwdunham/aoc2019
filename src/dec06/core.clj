@@ -37,6 +37,17 @@
        (apply merge)))
 
 (defn count-orbits
+  ([orbits] (count-orbits orbits 1 :o-COM))
+  ([orbits depth node]
+   (let [orbiters (get-orbiters-of node orbits)]  ;; (:o-A :o-X)
+     (if (seq orbiters)
+       (+ (* depth (count orbiters))
+          (->> orbiters
+               (map (fn [orbiter] (count-orbits orbits (inc depth) orbiter)))
+               (reduce +)))
+       0))))
+
+(defn count-orbits
   "Count the total number of orbits encoded in the tree structure represented by
   map `orbits`. Start at the root node 'COM' which is at depth 1. Recursive.
   Example orbits: {:o-A :o-COM :o-X :o-COM :o-B :o-A ...} can be visualized
