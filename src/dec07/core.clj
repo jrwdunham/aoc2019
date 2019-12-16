@@ -127,22 +127,23 @@
           0
           [psa psb psc psd pse]))
 
+(defmacro get-permutations
+  [lowest highest size]
+  (let [syms (vec (repeatedly size gensym))]
+    `(for [~@(mapcat (fn [s] [s `(range ~lowest ~(inc highest))]) syms)
+           :when (= ~size (count (set ~syms)))]
+       ~syms)))
+
 (defn find-highest-signal
   [program]
-  (-> (for [a (range 5) b (range 5) c (range 5) d (range 5) e (range 5)
-            :when (= (sort [a b c d e]) (sort (vec (set [a b c d e]))))]
-        (run-amplifiers program a b c d e))
-      sort
-      last))
+  (->> (get-permutations 0 4 5)
+       (map (fn [p] (apply run-amplifiers program p)))
+       sort
+       last))
 
 (defn find-highest-feedback-loop-signal
   [program]
-  (-> (for [a (range 5 10)
-            b (range 5 10)
-            c (range 5 10)
-            d (range 5 10)
-            e (range 5 10)
-            :when (= (sort [a b c d e]) (sort (vec (set [a b c d e]))))]
-        (run-program-in-feedback-loop program [a b c d e] nil 0))
-      sort
-      last))
+  (->> (get-permutations 5 9 5)
+       (map (fn [p] (run-program-in-feedback-loop program p nil 0)))
+       sort
+       last))

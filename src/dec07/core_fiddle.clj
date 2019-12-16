@@ -4,31 +4,12 @@
 
 (comment
 
-  (sut/run-program 2)
-
-  (sut/run-program 3)
-
-  (-> sut/input-path
-      slurp
-      sut/parse
-      sut/find-highest-signal
-      )
-
-  (not= 1 2 1)
-
-  (vec (set [1 2 1]))
-
-  (for [a (range 3)
-        b (range 3)
-        c (range 3)
-        :when (= (sort [a b c]) (sort (vec (set [a b c]))))]
-    [a b c])
-
-  (for [a (range 5 10) b (range 5 10) c (range 5 10) d (range 5 10) e (range 5 10)
-        :when (= (sort [a b c d e]) (sort (vec (set [a b c d e]))))]
-    [a b c d e])
-
-  (int? 9)
+  ;; Verify part one
+  (= 262086
+     (-> sut/input-path
+         slurp
+         sut/parse
+         sut/find-highest-signal))
 
   (let [input 0
         phase-setting 3
@@ -78,5 +59,9 @@
          slurp
          sut/parse
          sut/find-highest-feedback-loop-signal))
+
+  (sut/get-permutations 5 9 5)
+
+  (sut/get-permutations 1 6 3)
 
 )
