@@ -68,11 +68,8 @@
                    (if (> angle-lowest 0)
                      (- (* -2 lowest) (- primum angle-lowest))
                      angle-lowest))}))
-         (sort-by :angle)
-         reverse
-         #_(group-by :angle)
-         #_(sort-by key)
-         )))
+         (sort-by (fn [{:keys [angle distance]}] [angle (- 0 distance)]))
+         reverse)))
 
 (defn get-vaporization-order
   [cx cy asteroids-sorted-by-angle]
@@ -91,8 +88,32 @@
          (sort-by :rank)
          reverse)))
 
-(defn vaporize
+(defn vaporize-does-not-work
   [input]
   (let [[x y _] (get-best-base input)
         asteroids-sorted-by-angle (get-asteroids-sorted-by-angle x y input)]
     (get-vaporization-order x y asteroids-sorted-by-angle)))
+
+(defn recursive-vaporize
+  [asteroids-sorted-by-angle]
+  (let [{:keys [ordered leftover]}
+        (reduce
+         (fn [{:keys [last-angle ordered leftover] :as acc}
+              {:keys [coord angle distance] :as asteroid}]
+           (if (= angle last-angle)
+             (-> acc (update :leftover conj asteroid))
+             (-> acc
+                 (update :ordered conj asteroid)
+                 (assoc :last-angle angle))))
+         {:ordered []
+          :leftover []}
+         asteroids-sorted-by-angle)]
+    (if-not (seq leftover)
+      ordered
+      (concat ordered (recursive-vaporize leftover)))))
+
+(defn vaporize
+  [input]
+  (let [[x y _] (get-best-base input)
+        asteroids-sorted-by-angle (get-asteroids-sorted-by-angle x y input)]
+    (recursive-vaporize asteroids-sorted-by-angle)))
